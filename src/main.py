@@ -1,3 +1,4 @@
+import requests
 from task import Task
 from storage import save_tasks, load_tasks
 
@@ -9,6 +10,7 @@ def show_menu():
     print("3 - Marcar tarefa como concluída")
     print("4 - Remover tarefa")
     print("5 - Sair")
+    print("6 - Buscar endereço por CEP")
 
 
 def add_task(tasks):
@@ -85,6 +87,23 @@ def remove_task(tasks):
     except ValueError:
         print("Digite um número válido.")
 
+def buscar_cep():
+    cep = input("Digite o CEP: ")
+
+    url = f"https://viacep.com.br/ws/{cep}/json/"
+
+    resposta = requests.get(url)
+
+    if resposta.status_code == 200:
+        dados = resposta.json()
+
+        print("\n=== Endereço ===")
+        print("Rua:", dados.get("logradouro"))
+        print("Bairro:", dados.get("bairro"))
+        print("Cidade:", dados.get("localidade"))
+        print("Estado:", dados.get("uf"))
+    else:
+        print("Erro ao buscar CEP.")
 
 def main():
     tasks = load_tasks()
@@ -109,6 +128,8 @@ def main():
         elif choice == "5" :
             print("saindo...")
             break
+        elif choice == "6":
+            buscar_cep()
 
         else:
             print("Opção inválida.")
